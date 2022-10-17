@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup,FormControl, Validators, FormBuilder  } from "@angular/forms";
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -9,10 +10,11 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
+  isLogin:boolean=false;
   loginForm:FormGroup;
   constructor(private formBuilder:FormBuilder,
-     private authService:AuthService, private toastrService:ToastrService) { }
+     private authService:AuthService, private toastrService:ToastrService,
+     private router:Router) { }
 
   ngOnInit(): void {
     this.createLoginForm();
@@ -33,6 +35,8 @@ export class LoginComponent implements OnInit {
       this.authService.login(loginModel).subscribe(response=>{
         this.toastrService.info(response.message)
         localStorage.setItem("token",response.data.token)
+        this.router.navigate(["products"])
+        this.isLogin=true
       },responseError=>{       
         this.toastrService.error(responseError.error)
       })
